@@ -1,47 +1,75 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Page from './components/Page';
 import Search from './features/search/Search';
 import ResultList from './features/result/ResultList';
-import { searchAvailableRooms } from './api/classroomApi';
+import { fetchClassroomData } from './api/classroomApi';
+import { searchAvailableRooms } from './features/search/searchRooms';
 import './App.css';
 
 function App() {
   const [rooms, setRooms] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [regulars, setRegulars] = useState([]);
+  const [results, setResults] = useState([]);
+
+  const [isPreparing, setIsPreparing] = useState(true);
+  const [isDataReady, setIsDataReady] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSearch = async (condition) => {
-    try {
-      setIsLoading(true);
-      setHasSearched(true);
-      setErrorMessage('');
+  useEffect(() => {
+    async function prepareData() {
+      try {
+        const data = await fetchClassroomData();
 
-      const data = await searchAvailableRooms(condition);
-
-      setRooms(data.rooms || []);
-    } catch (error) {
-      setRooms([]);
-      setErrorMessage(error.message);
-    } finally {
-      setIsLoading(false);
+        setRooms(data.rooms);
+        setRegulars(data.regulars);
+        setIsDataReady(true);
+      } catch (error) {
+        setErrorMessage('강의실 데이터를 준비하지 못했습니다.');
+        console.error(error);
+      } finally {
+        setIsPreparing(false);
+      }
     }
+
+    prepareData();
+  }, []);
+
+  const handleSearch = (condition) => {
+    setHasSearched(true);
+
+    if (!isDataReady) {
+      setErrorMessage(
+        '강의실 데이터를 준비 중입니다. 잠시 후 다시 검색해 주세요.'
+      );
+      return;
+    }
+
+    setErrorMessage('');
+
+    const availableRooms = searchAvailableRooms({
+      rooms,
+      regulars,
+      ...condition,
+    });
+
+    setResults(availableRooms);
   };
 
   return (
     <Page>
-      <Search onSearch={handleSearch} disabled={isLoading} />
+      <Search onSearch={handleSearch} />
 
-      {isLoading && (
+      {isPreparing && (
         <div className="loading-container">
           <div className="spinner"></div>
-          <p>사용 가능한 강의실을 검색하는 중입니다.</p>
+          <p className="prepare-message">강의실 데이터를 준비 중입니다.</p>
         </div>
       )}
 
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-      {!isLoading && hasSearched && <ResultList results={rooms} />}
+      {hasSearched && isDataReady && <ResultList results={results} />}
     </Page>
   );
 }
