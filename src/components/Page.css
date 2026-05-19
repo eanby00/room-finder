@@ -1,0 +1,19 @@
+.page {
+  display: flex;
+  justify-content: center;
+
+  min-height: 100vh;
+  padding: 40px;
+
+  background: #f5f6f8;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  width: 100%;
+  min-width: 500px;
+  max-width: 720px;
+}
