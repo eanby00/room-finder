@@ -40,7 +40,7 @@ const TIME_OPTIONS = [
 
 function Search() {
   const [searchCondition, setSearchCondition] = useState({
-    useDate: '',
+    useDate: new Date().toISOString().split('T')[0],
     startTime: '08:00',
     endTime: '13:00',
     capacity: 0,
