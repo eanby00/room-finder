@@ -58,7 +58,7 @@ function App() {
 
   return (
     <Page>
-      <Search onSearch={handleSearch} />
+      <Search onError={setErrorMessage} onSearch={handleSearch} />
 
       {isPreparing && (
         <div className="loading-container">

@@ -38,13 +38,18 @@ const TIME_OPTIONS = [
   '23:30',
 ];
 
-function Search({ onSearch }) {
+function Search({ onSearch, onError }) {
   const [searchCondition, setSearchCondition] = useState({
     useDate: new Date().toISOString().split('T')[0],
     startTime: '08:00',
     endTime: '13:00',
     capacity: 0,
   });
+
+  const timeToMinutes = (time) => {
+    const [hour, minute] = time.split(':').map(Number);
+    return hour * 60 + minute;
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -56,6 +61,14 @@ function Search({ onSearch }) {
   };
 
   const handleSearch = () => {
+    const start = timeToMinutes(searchCondition.startTime);
+    const end = timeToMinutes(searchCondition.endTime);
+    if (start >= end) {
+      onError('종료 시간은 시작 시간보다 늦어야 합니다.');
+      return;
+    }
+
+    onError('');
     onSearch({
       date: searchCondition.useDate,
       startTime: searchCondition.startTime,
