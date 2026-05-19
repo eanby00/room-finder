@@ -1,8 +1,8 @@
 import RoomRow from '../../components/RoomRow';
 import './ResultList.css';
 
-function ResultList({ rooms }) {
-  if (rooms.length === 0) {
+function ResultList({ results = [] }) {
+  if (results.length === 0) {
     return <div className="empty-result">검색 결과가 없습니다.</div>;
   }
 
@@ -14,8 +14,8 @@ function ResultList({ rooms }) {
         <span>수용인원</span>
       </div>
 
-      {rooms.map((room) => (
-        <RoomRow key={`${room.buildingName}-${room.roomName}`} room={room} />
+      {results.map((room) => (
+        <RoomRow key={`${room.건물}-${room.강의실}`} room={room} />
       ))}
     </section>
   );

@@ -38,7 +38,7 @@ const TIME_OPTIONS = [
   '23:30',
 ];
 
-function Search() {
+function Search({ onSearch }) {
   const [searchCondition, setSearchCondition] = useState({
     useDate: new Date().toISOString().split('T')[0],
     startTime: '08:00',
@@ -56,7 +56,12 @@ function Search() {
   };
 
   const handleSearch = () => {
-    console.log(searchCondition);
+    onSearch({
+      date: searchCondition.useDate,
+      startTime: searchCondition.startTime,
+      endTime: searchCondition.endTime,
+      minCapacity: searchCondition.capacity,
+    });
   };
 
   return (
