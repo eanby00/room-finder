@@ -51,7 +51,7 @@ function Search({
     useDate: new Date().toISOString().split('T')[0],
     startTime: '08:00',
     endTime: '13:00',
-    capacity: 0,
+    capacity: '0',
   });
 
   const timeToMinutes = (time) => {
@@ -64,13 +64,32 @@ function Search({
 
     setSearchCondition((prev) => ({
       ...prev,
-      [name]: name === 'capacity' ? Number(value) : value,
+      [name]: value,
     }));
+  };
+
+  const handleCapacityFocus = () => {
+    if (searchCondition.capacity === '0') {
+      setSearchCondition((prev) => ({
+        ...prev,
+        capacity: '',
+      }));
+    }
+  };
+
+  const handleCapacityBlur = () => {
+    if (searchCondition.capacity === '') {
+      setSearchCondition((prev) => ({
+        ...prev,
+        capacity: '0',
+      }));
+    }
   };
 
   const handleSearch = () => {
     const start = timeToMinutes(searchCondition.startTime);
     const end = timeToMinutes(searchCondition.endTime);
+
     if (start >= end) {
       onError('종료 시간은 시작 시간보다 늦어야 합니다.');
       return;
@@ -81,13 +100,13 @@ function Search({
       date: searchCondition.useDate,
       startTime: searchCondition.startTime,
       endTime: searchCondition.endTime,
-      minCapacity: searchCondition.capacity,
+      minCapacity: Number(searchCondition.capacity || 0),
     });
   };
 
   return (
     <>
-      <Card title="사용 가능 강의실 후보 검색기">
+      <Card title="후보 강의실 검색기">
         <div className="search-form-grid">
           <FormField label="사용일">
             <input
@@ -133,6 +152,8 @@ function Search({
               min="0"
               value={searchCondition.capacity}
               onChange={handleChange}
+              onFocus={handleCapacityFocus}
+              onBlur={handleCapacityBlur}
             />
           </FormField>
         </div>
@@ -154,6 +175,7 @@ function Search({
           )}
         </div>
       </Card>
+
       {isRentalModalOpen && (
         <RentalUpdateModal
           onClose={() => setIsRentalModalOpen(false)}

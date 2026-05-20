@@ -6,6 +6,7 @@
   padding: 40px;
 
   background: #f5f6f8;
+  box-sizing: border-box;
 }
 
 .content-container {
@@ -14,6 +15,12 @@
   gap: 24px;
 
   width: 100%;
-  min-width: 500px;
   max-width: 720px;
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 20px;
+  }
 }

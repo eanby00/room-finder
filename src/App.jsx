@@ -23,10 +23,6 @@ function App() {
       try {
         const data = await fetchClassroomData();
 
-        console.log('전체 데이터:', data);
-        console.log('rentals:', data.rentals);
-        console.log('rentals length:', data.rentals?.length);
-
         setRooms(data.rooms);
         setRegulars(data.regulars);
         setRentals(data.rentals);
