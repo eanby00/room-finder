@@ -1,0 +1,21 @@
+import './Modal.css';
+
+function Modal({ title, children, onClose }) {
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal-card" onClick={(event) => event.stopPropagation()}>
+        <div className="modal-header">
+          <h2>{title}</h2>
+        </div>
+        <div className="modal-content">{children}</div>
+        <div className="modal-actions">
+          <button type="button" onClick={onClose}>
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Modal;

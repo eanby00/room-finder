@@ -4,3 +4,13 @@
   gap: 16px;
   margin-bottom: 24px;
 }
+
+.button-row {
+  display: flex;
+  gap: 8px;
+}
+
+.secondary-button {
+  background: #f1f3f5;
+  color: #333;
+}
