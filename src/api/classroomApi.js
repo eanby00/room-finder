@@ -1,8 +1,7 @@
-const API_URL =
-  'https://script.google.com/macros/s/AKfycbyTqY0Z5UwJ0MsX1TKGdTflGQjDh97QGPHRfW4s9WDkLVYZ88N9ePG820tLs4qZY5EuwA/exec';
+import { APPS_SCRIPT_URL } from '../config/appScript';
 
 export async function fetchClassroomData() {
-  const response = await fetch(API_URL);
+  const response = await fetch(APPS_SCRIPT_URL);
   const data = await response.json();
 
   if (data.error) {

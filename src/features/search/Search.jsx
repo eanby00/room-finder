@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Card from '../../components/Card';
 import FormField from '../../components/FormField';
 import './Search.css';
-import RentalUpdateModal from '../update/RentalUpdateModal';
+import RentalUpdateModal from '../rental/RentalUpdateModal';
 
 const TIME_OPTIONS = [
   '08:00',

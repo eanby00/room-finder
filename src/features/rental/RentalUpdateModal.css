@@ -1,0 +1,25 @@
+.rental-drop-zone {
+  padding: 36px 20px;
+  border: 2px dashed #c9ced6;
+  border-radius: 14px;
+  background: #f8f9fa;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rental-drop-zone:hover {
+  background: #f1f3f5;
+}
+
+.rental-drop-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+}
+
+.rental-drop-description {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #666;
+}
