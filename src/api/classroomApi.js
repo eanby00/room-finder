@@ -12,6 +12,6 @@ export async function fetchClassroomData() {
     rooms: data.rooms || [],
     regulars: data.regulars || [],
     rentals: data.rentals || [],
-    updatedAt: data.updatedAt,
+    rentalMeta: data.rentalMeta,
   };
 }

@@ -17,7 +17,25 @@ export const parseExcelFile = async (file) => {
   });
 };
 
+const REQUIRED_HEADERS = ['건물명', '실명', '행사기간'];
+
+const validateRentalHeaders = (rows) => {
+  const headers = rows[0] || [];
+
+  const missingHeaders = REQUIRED_HEADERS.filter(
+    (header) => !headers.includes(header)
+  );
+
+  if (missingHeaders.length > 0) {
+    throw new Error(
+      `잘못된 형식의 파일입니다.\n누락된 항목: ${missingHeaders.join(', ')}`
+    );
+  }
+};
+
 export const parseRentalRows = (rows) => {
+  validateRentalHeaders(rows);
+
   return rows
     .slice(2)
     .filter((row) => row[1] && row[3] && row[7])
@@ -41,5 +59,8 @@ export const parseRentalRows = (rows) => {
 
 export const parseRentalExcelFile = async (file) => {
   const rows = await parseExcelFile(file);
-  return parseRentalRows(rows);
+  return {
+    rentals: parseRentalRows(rows),
+    lastUpdatedAt: new Date(file.lastModified).toISOString(),
+  };
 };

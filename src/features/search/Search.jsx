@@ -39,13 +39,7 @@ const TIME_OPTIONS = [
   '23:30',
 ];
 
-function Search({
-  onSearch,
-  onError,
-  setRentals,
-  rentalUpdatedAt,
-  setRentalUpdatedAt,
-}) {
+function Search({ onSearch, onError, setRentals, setRentalMeta }) {
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
   const [searchCondition, setSearchCondition] = useState({
     useDate: new Date().toISOString().split('T')[0],
@@ -174,13 +168,6 @@ function Search({
           >
             대관 데이터 갱신
           </button>
-
-          {rentalUpdatedAt && (
-            <p className="rental-updated-at">
-              일회성 대관 최근 갱신:{' '}
-              {new Date(rentalUpdatedAt).toLocaleString()}
-            </p>
-          )}
         </div>
       </Card>
 
@@ -188,7 +175,7 @@ function Search({
         <RentalUpdateModal
           onClose={() => setIsRentalModalOpen(false)}
           setRentals={setRentals}
-          setRentalUpdatedAt={setRentalUpdatedAt}
+          setRentalMeta={setRentalMeta}
         />
       )}
     </>

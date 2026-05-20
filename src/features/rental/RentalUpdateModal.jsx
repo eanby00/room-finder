@@ -4,8 +4,24 @@ import { parseRentalExcelFile } from './rentalParser';
 import './RentalUpdateModal.css';
 import { sendRentalRowsToSheet } from './rentalApi';
 
-function RentalUpdateModal({ onClose, setRentals, setRentalUpdatedAt }) {
+const createRentalMeta = (rentals, lastUpdatedAt) => {
+  const buildings = [
+    ...new Set(rentals.map((rental) => rental.건물).filter(Boolean)),
+  ];
+
+  return buildings.reduce((acc, building) => {
+    acc[building] = {
+      lastUpdatedAt,
+    };
+
+    return acc;
+  }, {});
+};
+
+function RentalUpdateModal({ onClose, setRentals, setRentalMeta }) {
   const [uploadStatus, setUploadStatus] = useState('idle');
+  const [uploadErrorMessage, setUploadErrorMessage] =
+    useState('업로드 중 오류가 발생했습니다.');
 
   const handleDrop = async (event) => {
     event.preventDefault();
@@ -18,14 +34,18 @@ function RentalUpdateModal({ onClose, setRentals, setRentalUpdatedAt }) {
     try {
       setUploadStatus('uploading');
 
-      const rentals = await parseRentalExcelFile(file);
+      const result = await parseRentalExcelFile(file);
 
-      await sendRentalRowsToSheet(rentals);
-      setRentals(rentals);
-      setRentalUpdatedAt(new Date().toISOString());
+      await sendRentalRowsToSheet({
+        rentals: result.rentals,
+        lastUpdatedAt: result.lastUpdatedAt,
+      });
+      setRentals(result.rentals);
+      setRentalMeta(createRentalMeta(result.rentals, result.lastUpdatedAt));
       setUploadStatus('success');
-    } catch {
+    } catch (error) {
       setUploadStatus('error');
+      setUploadErrorMessage(error.message);
     }
   };
 
@@ -65,7 +85,7 @@ function RentalUpdateModal({ onClose, setRentals, setRentalUpdatedAt }) {
         )}
 
         {uploadStatus === 'error' && (
-          <p className="rental-drop-title">업로드 중 오류가 발생했습니다.</p>
+          <p className="rental-drop-title">{uploadErrorMessage}</p>
         )}
       </div>
     </Modal>

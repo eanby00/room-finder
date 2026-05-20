@@ -12,7 +12,7 @@ function App() {
   const [regulars, setRegulars] = useState([]);
   const [results, setResults] = useState([]);
   const [rentals, setRentals] = useState([]);
-  const [rentalUpdatedAt, setRentalUpdatedAt] = useState('');
+  const [rentalMeta, setRentalMeta] = useState({});
 
   const [isPreparing, setIsPreparing] = useState(true);
   const [isDataReady, setIsDataReady] = useState(false);
@@ -27,7 +27,7 @@ function App() {
         setRooms(data.rooms);
         setRegulars(data.regulars);
         setRentals(data.rentals);
-        setRentalUpdatedAt(data.updatedAt);
+        setRentalMeta(data.rentalMeta);
         setIsDataReady(true);
       } catch (error) {
         setErrorMessage('강의실 데이터를 준비하지 못했습니다.');
@@ -68,8 +68,7 @@ function App() {
         onError={setErrorMessage}
         onSearch={handleSearch}
         setRentals={setRentals}
-        rentalUpdatedAt={rentalUpdatedAt}
-        setRentalUpdatedAt={setRentalUpdatedAt}
+        setRentalMeta={setRentalMeta}
       />
 
       {isPreparing && (
@@ -87,7 +86,9 @@ function App() {
         </Modal>
       )}
 
-      {hasSearched && isDataReady && <ResultList results={results} />}
+      {hasSearched && isDataReady && (
+        <ResultList results={results} rentalMeta={rentalMeta} />
+      )}
     </Page>
   );
 }
