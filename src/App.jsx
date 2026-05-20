@@ -10,6 +10,7 @@ function App() {
   const [rooms, setRooms] = useState([]);
   const [regulars, setRegulars] = useState([]);
   const [results, setResults] = useState([]);
+  const [rentals, setRentals] = useState([]);
 
   const [isPreparing, setIsPreparing] = useState(true);
   const [isDataReady, setIsDataReady] = useState(false);
@@ -23,6 +24,7 @@ function App() {
 
         setRooms(data.rooms);
         setRegulars(data.regulars);
+        setRentals(data.rentals);
         setIsDataReady(true);
       } catch (error) {
         setErrorMessage('강의실 데이터를 준비하지 못했습니다.');
@@ -50,6 +52,7 @@ function App() {
     const availableRooms = searchAvailableRooms({
       rooms,
       regulars,
+      rentals,
       ...condition,
     });
 
@@ -58,7 +61,11 @@ function App() {
 
   return (
     <Page>
-      <Search onError={setErrorMessage} onSearch={handleSearch} />
+      <Search
+        onError={setErrorMessage}
+        onSearch={handleSearch}
+        setRentals={setRentals}
+      />
 
       {isPreparing && (
         <div className="loading-container">

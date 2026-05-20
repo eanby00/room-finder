@@ -34,12 +34,14 @@ function regularTimeToMinutes(value) {
 export function searchAvailableRooms({
   rooms,
   regulars,
+  rentals = [],
   date,
   startTime,
   endTime,
   minCapacity,
 }) {
   const requestDay = getDayName(date);
+  const requestDate = normalizeDateText(date);
   const requestStart = timeStringToMinutes(startTime);
   const requestEnd = timeStringToMinutes(endTime);
   const capacity = Number(minCapacity || 0);
@@ -59,10 +61,34 @@ export function searchAvailableRooms({
     }
   });
 
+  rentals.forEach((rental) => {
+    const rentalDate = normalizeDateText(rental.날짜);
+
+    if (rentalDate !== requestDate) {
+      return;
+    }
+
+    const existingStart = timeStringToMinutes(rental.시작);
+    const existingEnd = timeStringToMinutes(rental.종료);
+
+    if (isOverlapped(existingStart, existingEnd, requestStart, requestEnd)) {
+      conflictedRoomKeys.add(createRoomKey(rental.건물, rental.강의실));
+    }
+  });
+
   return rooms.filter((room) => {
     const roomCapacity = Number(room.수용인원 || 0);
     const roomKey = createRoomKey(room.건물, room.강의실);
 
     return roomCapacity >= capacity && !conflictedRoomKeys.has(roomKey);
   });
+}
+
+function normalizeDateText(value) {
+  if (!value) return '';
+
+  return String(value)
+    .trim()
+    .replaceAll('.', '-')
+    .replace(/-(\d)(?=-|$)/g, '-0$1');
 }

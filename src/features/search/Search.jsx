@@ -39,7 +39,7 @@ const TIME_OPTIONS = [
   '23:30',
 ];
 
-function Search({ onSearch, onError }) {
+function Search({ onSearch, onError, setRentals }) {
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
   const [searchCondition, setSearchCondition] = useState({
     useDate: new Date().toISOString().split('T')[0],
@@ -142,7 +142,10 @@ function Search({ onSearch, onError }) {
         </div>
       </Card>
       {isRentalModalOpen && (
-        <RentalUpdateModal onClose={() => setIsRentalModalOpen(false)} />
+        <RentalUpdateModal
+          onClose={() => setIsRentalModalOpen(false)}
+          setRentals={setRentals}
+        />
       )}
     </>
   );

@@ -1,43 +1,11 @@
 import { useState } from 'react';
-import * as XLSX from 'xlsx';
 import Modal from '../../components/Modal';
-import { APPS_SCRIPT_URL } from '../../config/appScript';
+import { parseRentalExcelFile } from './rentalParser';
 import './RentalUpdateModal.css';
+import { sendRentalRowsToSheet } from './rentalApi';
 
-function RentalUpdateModal({ onClose }) {
+function RentalUpdateModal({ onClose, setRentals }) {
   const [uploadStatus, setUploadStatus] = useState('idle');
-
-  const parseExcelFile = async (file) => {
-    const arrayBuffer = await file.arrayBuffer();
-
-    const workbook = XLSX.read(arrayBuffer, {
-      type: 'array',
-    });
-
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    const rows = XLSX.utils.sheet_to_json(sheet, {
-      header: 1,
-      defval: '',
-    });
-
-    console.log(rows);
-
-    return rows;
-  };
-
-  const sendRowsToAppsScript = async (file, rows) => {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        type: 'rentalUpdate',
-        fileName: file.name,
-        lastModified: file.lastModified,
-        rows,
-      }),
-    });
-  };
 
   const handleDrop = async (event) => {
     event.preventDefault();
@@ -48,9 +16,10 @@ function RentalUpdateModal({ onClose }) {
     try {
       setUploadStatus('uploading');
 
-      const rows = await parseExcelFile(file);
+      const rentals = await parseRentalExcelFile(file);
 
-      await sendRowsToAppsScript(file, rows);
+      await sendRentalRowsToSheet(rentals);
+      setRentals(rentals);
 
       setUploadStatus('success');
     } catch {
