@@ -3,6 +3,7 @@ import Card from '../../components/Card';
 import FormField from '../../components/FormField';
 import './Search.css';
 import RentalUpdateModal from '../rental/RentalUpdateModal';
+import { logSearchUsage } from '../../api/classroomApi';
 
 const TIME_OPTIONS = [
   '08:00',
@@ -88,6 +89,8 @@ function Search({ onSearch, onError, setRentals, setRentalMeta }) {
       onError('종료 시간은 시작 시간보다 늦어야 합니다.');
       return;
     }
+
+    logSearchUsage();
 
     onError('');
     onSearch({
