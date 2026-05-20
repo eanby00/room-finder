@@ -29,12 +29,17 @@ function ResultList({ results = [], rentalMeta = {} }) {
   return (
     <div className="result-grid">
       {Object.entries(groupedResults).map(([building, rooms]) => {
+        const endDate = rentalMeta?.[building]?.endDate;
         const lastUpdatedAt = rentalMeta?.[building]?.lastUpdatedAt;
 
         return (
           <section className="building-card" key={building}>
             <div className="building-header">
-              <div className="building-title">{building}</div>
+              <div className="building-title-wrapper">
+                <div className="building-title">{building}</div>
+
+                <div className="building-end-date">{`(~${endDate})`}</div>
+              </div>
 
               <div className="rental-updated-at">
                 정보 갱신일: {formatUpdatedAt(lastUpdatedAt)}
