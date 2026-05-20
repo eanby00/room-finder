@@ -4,11 +4,13 @@ import { parseRentalExcelFile } from './rentalParser';
 import './RentalUpdateModal.css';
 import { sendRentalRowsToSheet } from './rentalApi';
 
-function RentalUpdateModal({ onClose, setRentals }) {
+function RentalUpdateModal({ onClose, setRentals, setRentalUpdatedAt }) {
   const [uploadStatus, setUploadStatus] = useState('idle');
 
   const handleDrop = async (event) => {
     event.preventDefault();
+
+    if (uploadStatus === 'uploading') return;
 
     const file = event.dataTransfer.files[0];
     if (!file) return;
@@ -20,7 +22,7 @@ function RentalUpdateModal({ onClose, setRentals }) {
 
       await sendRentalRowsToSheet(rentals);
       setRentals(rentals);
-
+      setRentalUpdatedAt(new Date().toISOString());
       setUploadStatus('success');
     } catch {
       setUploadStatus('error');
