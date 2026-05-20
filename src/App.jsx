@@ -5,6 +5,7 @@ import ResultList from './features/result/ResultList';
 import { fetchClassroomData } from './api/classroomApi';
 import { searchAvailableRooms } from './features/search/searchRooms';
 import './App.css';
+import Modal from './components/Modal';
 
 function App() {
   const [rooms, setRooms] = useState([]);
@@ -78,7 +79,13 @@ function App() {
         </div>
       )}
 
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {errorMessage && (
+        <Modal onClose={() => setErrorMessage('')}>
+          <div className="loading-content">
+            <p>{errorMessage}</p>
+          </div>
+        </Modal>
+      )}
 
       {hasSearched && isDataReady && <ResultList results={results} />}
     </Page>

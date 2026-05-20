@@ -22,4 +22,5 @@
   margin: 8px 0 0;
   font-size: 14px;
   color: #666;
+  white-space: pre-line;
 }

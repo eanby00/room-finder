@@ -43,11 +43,12 @@ function RentalUpdateModal({ onClose, setRentals, setRentalUpdatedAt }) {
         {uploadStatus === 'idle' && (
           <>
             <p className="rental-drop-title">
-              공간사용현황 파일을 여기에 드래그앤드롭해 주세요.
+              공간사용현황 파일을 여기에 넣어주세요.
             </p>
             <p className="rental-drop-description">
-              엑셀 파일을 업로드하면 대관 데이터를 갱신합니다.
+              교내정보시스템의 시설물대관현황조회에서
             </p>
+            <p className="rental-drop-description">다운받을 수 있습니다.</p>
           </>
         )}
 
