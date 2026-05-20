@@ -7,10 +7,69 @@
 
 .button-row {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.button-row button {
+  height: 44px;
+  padding: 0 18px;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.primary-button {
+  background-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+.primary-button:hover {
+  background-color: #1d4ed8;
 }
 
 .secondary-button {
-  background: #f1f3f5;
-  color: #333;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.secondary-button:hover {
+  background-color: #e5e7eb;
+}
+
+.button-row button:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+@media (max-width: 600px) {
+  .button-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .button-row button {
+    width: 100%;
+  }
+}
+
+.rental-updated-at {
+  width: 100%;
+  margin: 4px 0 0;
+
+  font-size: 13px;
+  color: #6b7280;
 }

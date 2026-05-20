@@ -159,11 +159,19 @@ function Search({
         </div>
 
         <div className="button-row">
-          <button type="button" onClick={handleSearch}>
+          <button
+            type="button"
+            className="primary-button"
+            onClick={handleSearch}
+          >
             검색
           </button>
 
-          <button type="button" onClick={() => setIsRentalModalOpen(true)}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => setIsRentalModalOpen(true)}
+          >
             대관 데이터 갱신
           </button>
 
