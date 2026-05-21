@@ -46,6 +46,10 @@ function App() {
     setResults(availableRooms);
   };
 
+  const closeModal = () => {
+    setErrorMessage('');
+  };
+
   return (
     <Page>
       <Search
@@ -63,7 +67,7 @@ function App() {
       )}
 
       {errorMessage && (
-        <Modal onClose={() => setErrorMessage('')}>
+        <Modal onClose={closeModal}>
           <div className="loading-content">
             <p>{errorMessage}</p>
           </div>

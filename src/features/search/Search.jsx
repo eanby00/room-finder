@@ -1,58 +1,17 @@
 import { useState } from 'react';
 import Card from '../../components/Card';
 import FormField from '../../components/FormField';
-import './Search.css';
 import RentalUpdateModal from '../rental/RentalUpdateModal';
 import { logSearchUsage } from '../../api/classroomApi';
-
-const TIME_OPTIONS = [
-  '08:00',
-  '08:30',
-  '09:00',
-  '09:30',
-  '10:00',
-  '10:30',
-  '11:00',
-  '11:30',
-  '12:00',
-  '12:30',
-  '13:00',
-  '13:30',
-  '14:00',
-  '14:30',
-  '15:00',
-  '15:30',
-  '16:00',
-  '16:30',
-  '17:00',
-  '17:30',
-  '18:00',
-  '18:30',
-  '19:00',
-  '19:30',
-  '20:00',
-  '20:30',
-  '21:00',
-  '21:30',
-  '22:00',
-  '22:30',
-  '23:00',
-  '23:30',
-];
+import { INITIAL_SEARCH_CONDITION, TIME_OPTIONS } from './searchConstants';
+import { createSearchPayload, isValidTimeRange } from './searchUtils';
+import './Search.css';
 
 function Search({ onSearch, onError, setRentals, setRentalMeta }) {
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
-  const [searchCondition, setSearchCondition] = useState({
-    useDate: new Date().toISOString().split('T')[0],
-    startTime: '08:00',
-    endTime: '13:00',
-    capacity: '0',
-  });
-
-  const timeToMinutes = (time) => {
-    const [hour, minute] = time.split(':').map(Number);
-    return hour * 60 + minute;
-  };
+  const [searchCondition, setSearchCondition] = useState(
+    INITIAL_SEARCH_CONDITION
+  );
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -64,41 +23,32 @@ function Search({ onSearch, onError, setRentals, setRentalMeta }) {
   };
 
   const handleCapacityFocus = () => {
-    if (searchCondition.capacity === '0') {
-      setSearchCondition((prev) => ({
-        ...prev,
-        capacity: '',
-      }));
-    }
+    if (searchCondition.capacity !== '0') return;
+
+    setSearchCondition((prev) => ({
+      ...prev,
+      capacity: '',
+    }));
   };
 
   const handleCapacityBlur = () => {
-    if (searchCondition.capacity === '') {
-      setSearchCondition((prev) => ({
-        ...prev,
-        capacity: '0',
-      }));
-    }
+    if (searchCondition.capacity !== '') return;
+
+    setSearchCondition((prev) => ({
+      ...prev,
+      capacity: '0',
+    }));
   };
 
   const handleSearch = () => {
-    const start = timeToMinutes(searchCondition.startTime);
-    const end = timeToMinutes(searchCondition.endTime);
-
-    if (start >= end) {
+    if (!isValidTimeRange(searchCondition.startTime, searchCondition.endTime)) {
       onError('종료 시간은 시작 시간보다 늦어야 합니다.');
       return;
     }
-
     logSearchUsage();
 
     onError('');
-    onSearch({
-      date: searchCondition.useDate,
-      startTime: searchCondition.startTime,
-      endTime: searchCondition.endTime,
-      minCapacity: Number(searchCondition.capacity || 0),
-    });
+    onSearch(createSearchPayload(searchCondition));
   };
 
   return (
