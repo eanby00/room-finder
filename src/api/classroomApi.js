@@ -1,5 +1,9 @@
 import { APPS_SCRIPT_URL } from '../config/appScript';
 
+const REQUEST_TYPE = {
+  LOG: 'log',
+};
+
 export async function fetchClassroomData() {
   const response = await fetch(APPS_SCRIPT_URL);
   const data = await response.json();
@@ -12,7 +16,7 @@ export async function fetchClassroomData() {
     rooms: data.rooms || [],
     regulars: data.regulars || [],
     rentals: data.rentals || [],
-    rentalMeta: data.rentalMeta,
+    rentalMeta: data.rentalMeta || {},
   };
 }
 
@@ -21,7 +25,7 @@ export function logSearchUsage() {
     method: 'POST',
     mode: 'no-cors',
     body: JSON.stringify({
-      type: 'log',
+      type: REQUEST_TYPE.LOG,
     }),
   }).catch(() => {});
 }
