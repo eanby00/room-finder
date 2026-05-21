@@ -1,46 +1,27 @@
 import { useState } from 'react';
 import Modal from '../../components/Modal';
 import { parseRentalExcelFile } from './rentalParser';
-import './RentalUpdateModal.css';
 import { sendRentalRowsToSheet } from './rentalApi';
-
-const createRentalMeta = (rentals, lastUpdatedAt) => {
-  return rentals.reduce((acc, rental) => {
-    const building = rental.건물;
-    const date = rental.날짜;
-
-    if (!building || !date) {
-      return acc;
-    }
-
-    const currentEndDate = acc[building]?.endDate;
-
-    if (!currentEndDate || date > currentEndDate) {
-      acc[building] = {
-        lastUpdatedAt,
-        endDate: date,
-      };
-    }
-
-    return acc;
-  }, {});
-};
+import { createRentalMeta } from './rentalUtils';
+import { DEFAULT_UPLOAD_ERROR_MESSAGE, UPLOAD_STATUS } from './rentalConstants';
+import './RentalUpdateModal.css';
 
 function RentalUpdateModal({ onClose, setRentals, setRentalMeta }) {
-  const [uploadStatus, setUploadStatus] = useState('idle');
-  const [uploadErrorMessage, setUploadErrorMessage] =
-    useState('업로드 중 오류가 발생했습니다.');
+  const [uploadStatus, setUploadStatus] = useState(UPLOAD_STATUS.IDLE);
+  const [uploadErrorMessage, setUploadErrorMessage] = useState(
+    DEFAULT_UPLOAD_ERROR_MESSAGE
+  );
 
   const handleDrop = async (event) => {
     event.preventDefault();
 
-    if (uploadStatus === 'uploading') return;
+    if (uploadStatus === UPLOAD_STATUS.UPLOADING) return;
 
     const file = event.dataTransfer.files[0];
     if (!file) return;
 
     try {
-      setUploadStatus('uploading');
+      setUploadStatus(UPLOAD_STATUS.UPLOADING);
 
       const result = await parseRentalExcelFile(file);
 
@@ -48,12 +29,13 @@ function RentalUpdateModal({ onClose, setRentals, setRentalMeta }) {
         rentals: result.rentals,
         lastUpdatedAt: result.lastUpdatedAt,
       });
+
       setRentals(result.rentals);
       setRentalMeta(createRentalMeta(result.rentals, result.lastUpdatedAt));
-      setUploadStatus('success');
+      setUploadStatus(UPLOAD_STATUS.SUCCESS);
     } catch (error) {
-      setUploadStatus('error');
-      setUploadErrorMessage(error.message);
+      setUploadStatus(UPLOAD_STATUS.ERROR);
+      setUploadErrorMessage(error.message || DEFAULT_UPLOAD_ERROR_MESSAGE);
     }
   };
 
@@ -68,7 +50,7 @@ function RentalUpdateModal({ onClose, setRentals, setRentalMeta }) {
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
-        {uploadStatus === 'idle' && (
+        {uploadStatus === UPLOAD_STATUS.IDLE && (
           <>
             <p className="rental-drop-title">
               공간사용현황 파일을 여기에 넣어주세요.
@@ -80,19 +62,19 @@ function RentalUpdateModal({ onClose, setRentals, setRentalMeta }) {
           </>
         )}
 
-        {uploadStatus === 'uploading' && (
+        {uploadStatus === UPLOAD_STATUS.UPLOADING && (
           <p className="rental-drop-title">
             대관 데이터를 갱신하는 중입니다...
           </p>
         )}
 
-        {uploadStatus === 'success' && (
+        {uploadStatus === UPLOAD_STATUS.SUCCESS && (
           <p className="rental-drop-title">
             대관 데이터 갱신이 완료되었습니다.
           </p>
         )}
 
-        {uploadStatus === 'error' && (
+        {uploadStatus === UPLOAD_STATUS.ERROR && (
           <p className="rental-drop-title">{uploadErrorMessage}</p>
         )}
       </div>
