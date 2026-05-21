@@ -1,3 +1,8 @@
+import {
+  formatEndDate,
+  formatUpdatedAt,
+  groupRoomsByBuilding,
+} from './resultUtils';
 import './ResultList.css';
 
 function ResultList({ results = [], rentalMeta = {} }) {
@@ -5,26 +10,7 @@ function ResultList({ results = [], rentalMeta = {} }) {
     return <div className="empty-result">검색 결과가 없습니다.</div>;
   }
 
-  const groupedResults = results.reduce((acc, room) => {
-    const building = room.건물;
-
-    if (!acc[building]) acc[building] = [];
-    acc[building].push(room);
-
-    return acc;
-  }, {});
-
-  const formatUpdatedAt = (value) => {
-    if (!value) return '갱신 정보 없음';
-
-    return new Date(value).toLocaleString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  const groupedResults = groupRoomsByBuilding(results);
 
   return (
     <div className="result-grid">
@@ -38,7 +24,11 @@ function ResultList({ results = [], rentalMeta = {} }) {
               <div className="building-title-wrapper">
                 <div className="building-title">{building}</div>
 
-                <div className="building-end-date">{`(~${endDate})`}</div>
+                {endDate && (
+                  <div className="building-end-date">
+                    {formatEndDate(endDate)}
+                  </div>
+                )}
               </div>
 
               <div className="rental-updated-at">
