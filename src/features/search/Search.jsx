@@ -3,15 +3,18 @@ import Card from '../../components/Card';
 import FormField from '../../components/FormField';
 import RentalUpdateModal from '../rental/RentalUpdateModal';
 import { logSearchUsage } from '../../api/classroomApi';
-import { INITIAL_SEARCH_CONDITION, TIME_OPTIONS } from './searchConstants';
+import { TIME_OPTIONS } from './searchConstants';
 import { createSearchPayload, isValidTimeRange } from './searchUtils';
 import './Search.css';
 
 function Search({ onSearch, onError, setRentals, setRentalMeta }) {
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
-  const [searchCondition, setSearchCondition] = useState(
-    INITIAL_SEARCH_CONDITION
-  );
+  const [searchCondition, setSearchCondition] = useState({
+    useDate: new Date().toISOString().split('T')[0],
+    startTime: '08:00',
+    endTime: '13:00',
+    capacity: '0',
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;

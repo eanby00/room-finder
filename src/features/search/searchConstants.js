@@ -32,10 +32,3 @@ export const TIME_OPTIONS = [
   '23:00',
   '23:30',
 ];
-
-export const INITIAL_SEARCH_CONDITION = {
-  useDate: new Date().toISOString().split('T')[0],
-  startTime: '08:00',
-  endTime: '13:00',
-  capacity: '0',
-};
