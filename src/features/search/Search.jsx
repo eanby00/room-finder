@@ -10,7 +10,9 @@ import './Search.css';
 function Search({ onSearch, onError, setRentals, setRentalMeta }) {
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
   const [searchCondition, setSearchCondition] = useState({
-    useDate: new Date().toISOString().split('T')[0],
+    useDate: new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Asia/Seoul',
+    }).format(new Date()),
     startTime: '08:00',
     endTime: '13:00',
     capacity: '0',
