@@ -13,6 +13,15 @@ function timeStringToMinutes(timeString) {
   return hour * 60 + minute;
 }
 
+function normalizeDateText(value) {
+  if (!value) return '';
+
+  return String(value)
+    .trim()
+    .replaceAll('.', '-')
+    .replace(/-(\d)(?=-|$)/g, '-0$1');
+}
+
 function createRoomKey(building, classroom) {
   return `${String(building).trim()}__${String(classroom).trim()}`;
 }
@@ -29,6 +38,53 @@ function regularTimeToMinutes(value) {
   }
 
   return timeStringToMinutes(text);
+}
+
+function addRegularConflicts({
+  conflictedRoomKeys,
+  regulars,
+  requestDay,
+  requestStart,
+  requestEnd,
+}) {
+  regulars.forEach((regular) => {
+    if (String(regular.요일).trim() !== requestDay) return;
+
+    const existingStart = regularTimeToMinutes(regular.시작);
+    const existingEnd = regularTimeToMinutes(regular.종료);
+
+    if (isOverlapped(existingStart, existingEnd, requestStart, requestEnd)) {
+      conflictedRoomKeys.add(createRoomKey(regular.건물, regular.강의실));
+    }
+  });
+}
+
+function addRentalConflicts({
+  conflictedRoomKeys,
+  rentals,
+  requestDate,
+  requestStart,
+  requestEnd,
+}) {
+  rentals.forEach((rental) => {
+    const rentalDate = normalizeDateText(rental.날짜);
+
+    if (rentalDate !== requestDate) return;
+
+    const existingStart = timeStringToMinutes(rental.시작);
+    const existingEnd = timeStringToMinutes(rental.종료);
+
+    if (isOverlapped(existingStart, existingEnd, requestStart, requestEnd)) {
+      conflictedRoomKeys.add(createRoomKey(rental.건물, rental.강의실));
+    }
+  });
+}
+
+function isAvailableRoom(room, conflictedRoomKeys, capacity) {
+  const roomCapacity = Number(room.수용인원 || 0);
+  const roomKey = createRoomKey(room.건물, room.강의실);
+
+  return roomCapacity >= capacity && !conflictedRoomKeys.has(roomKey);
 }
 
 export function searchAvailableRooms({
@@ -48,47 +104,23 @@ export function searchAvailableRooms({
 
   const conflictedRoomKeys = new Set();
 
-  regulars.forEach((regular) => {
-    if (String(regular.요일).trim() !== requestDay) {
-      return;
-    }
-
-    const existingStart = regularTimeToMinutes(regular.시작);
-    const existingEnd = regularTimeToMinutes(regular.종료);
-
-    if (isOverlapped(existingStart, existingEnd, requestStart, requestEnd)) {
-      conflictedRoomKeys.add(createRoomKey(regular.건물, regular.강의실));
-    }
+  addRegularConflicts({
+    conflictedRoomKeys,
+    regulars,
+    requestDay,
+    requestStart,
+    requestEnd,
   });
 
-  rentals.forEach((rental) => {
-    const rentalDate = normalizeDateText(rental.날짜);
-
-    if (rentalDate !== requestDate) {
-      return;
-    }
-
-    const existingStart = timeStringToMinutes(rental.시작);
-    const existingEnd = timeStringToMinutes(rental.종료);
-
-    if (isOverlapped(existingStart, existingEnd, requestStart, requestEnd)) {
-      conflictedRoomKeys.add(createRoomKey(rental.건물, rental.강의실));
-    }
+  addRentalConflicts({
+    conflictedRoomKeys,
+    rentals,
+    requestDate,
+    requestStart,
+    requestEnd,
   });
 
-  return rooms.filter((room) => {
-    const roomCapacity = Number(room.수용인원 || 0);
-    const roomKey = createRoomKey(room.건물, room.강의실);
-
-    return roomCapacity >= capacity && !conflictedRoomKeys.has(roomKey);
-  });
-}
-
-function normalizeDateText(value) {
-  if (!value) return '';
-
-  return String(value)
-    .trim()
-    .replaceAll('.', '-')
-    .replace(/-(\d)(?=-|$)/g, '-0$1');
+  return rooms.filter((room) =>
+    isAvailableRoom(room, conflictedRoomKeys, capacity)
+  );
 }
