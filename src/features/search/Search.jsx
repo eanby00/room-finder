@@ -128,6 +128,18 @@ function Search({ onSearch, onError, setRentals, setRentalMeta }) {
             </select>
           </FormField>
 
+          <FormField label="사용 인원">
+            <input
+              type="number"
+              name="capacity"
+              min="0"
+              value={searchCondition.capacity}
+              onChange={handleChange}
+              onFocus={handleCapacityFocus}
+              onBlur={handleCapacityBlur}
+            />
+          </FormField>
+
           <FormField label="종료시간">
             <select
               name="endTime"
@@ -140,18 +152,6 @@ function Search({ onSearch, onError, setRentals, setRentalMeta }) {
                 </option>
               ))}
             </select>
-          </FormField>
-
-          <FormField label="사용 인원">
-            <input
-              type="number"
-              name="capacity"
-              min="0"
-              value={searchCondition.capacity}
-              onChange={handleChange}
-              onFocus={handleCapacityFocus}
-              onBlur={handleCapacityBlur}
-            />
           </FormField>
         </div>
 
