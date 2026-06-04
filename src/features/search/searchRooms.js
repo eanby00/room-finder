@@ -1,4 +1,5 @@
 import { normalizeRoomName } from '../../utils/normalizeRoomName';
+import { timeToMinutes } from '../../utils/time';
 
 const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -7,12 +8,6 @@ function getDayName(dateString) {
   const date = new Date(year, month - 1, day);
 
   return DAY_NAMES[date.getDay()];
-}
-
-function timeStringToMinutes(timeString) {
-  const [hour, minute] = String(timeString).split(':').map(Number);
-
-  return hour * 60 + minute;
 }
 
 function normalizeDateText(value) {
@@ -44,7 +39,7 @@ function regularTimeToMinutes(value) {
     return 0;
   }
 
-  return timeStringToMinutes(text);
+  return timeToMinutes(text);
 }
 
 function addRegularConflicts({
@@ -78,8 +73,8 @@ function addRentalConflicts({
 
     if (rentalDate !== requestDate) return;
 
-    const existingStart = timeStringToMinutes(rental.시작);
-    const existingEnd = timeStringToMinutes(rental.종료);
+    const existingStart = timeToMinutes(rental.시작);
+    const existingEnd = timeToMinutes(rental.종료);
 
     if (isOverlapped(existingStart, existingEnd, requestStart, requestEnd)) {
       conflictedRoomKeys.add(createRoomKey(rental.건물, rental.강의실));
@@ -105,8 +100,8 @@ export function searchAvailableRooms({
 }) {
   const requestDay = getDayName(date);
   const requestDate = normalizeDateText(date);
-  const requestStart = timeStringToMinutes(startTime);
-  const requestEnd = timeStringToMinutes(endTime);
+  const requestStart = timeToMinutes(startTime);
+  const requestEnd = timeToMinutes(endTime);
   const capacity = Number(minCapacity || 0);
 
   const conflictedRoomKeys = new Set();
