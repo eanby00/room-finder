@@ -27,11 +27,13 @@ function RentalUpdateModal({ onClose, setRentals, setBuildingMeta }) {
 
       await sendRentalRowsToSheet({
         rows: result.rentals,
-        rentalLastUpdatedAt: result.lastUpdatedAt,
+        rentalLastUpdatedAt: result.rentalLastUpdatedAt,
       });
 
       setRentals(result.rentals);
-      setBuildingMeta(createBuildingMeta(result.rentals, result.lastUpdatedAt));
+      setBuildingMeta(
+        createBuildingMeta(result.rentals, result.rentalLastUpdatedAt)
+      );
 
       setUploadStatus(UPLOAD_STATUS.SUCCESS);
     } catch (error) {

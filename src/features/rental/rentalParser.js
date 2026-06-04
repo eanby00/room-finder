@@ -91,6 +91,6 @@ export async function parseRentalExcelFile(file) {
 
   return {
     rentals: parseRentalRows(rows),
-    lastUpdatedAt: new Date(file.lastModified).toISOString(),
+    rentalLastUpdatedAt: new Date(file.lastModified).toISOString(),
   };
 }
