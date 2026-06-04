@@ -7,7 +7,7 @@ import { TIME_OPTIONS } from './searchConstants';
 import { createSearchPayload, isValidTimeRange } from './searchUtils';
 import './Search.css';
 
-function Search({ onSearch, onError, setRentals, setBuildingMeta }) {
+function Search({ onSearch, onError, setClassroomData }) {
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
   const [searchCondition, setSearchCondition] = useState({
     useDate: new Intl.DateTimeFormat('sv-SE', {
@@ -132,8 +132,7 @@ function Search({ onSearch, onError, setRentals, setBuildingMeta }) {
       {isRentalModalOpen && (
         <RentalUpdateModal
           onClose={() => setIsRentalModalOpen(false)}
-          setRentals={setRentals}
-          setBuildingMeta={setBuildingMeta}
+          setClassroomData={setClassroomData}
         />
       )}
     </>

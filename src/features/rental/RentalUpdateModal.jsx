@@ -6,7 +6,7 @@ import { createBuildingMeta } from './rentalUtils';
 import { DEFAULT_UPLOAD_ERROR_MESSAGE, UPLOAD_STATUS } from './rentalConstants';
 import './RentalUpdateModal.css';
 
-function RentalUpdateModal({ onClose, setRentals, setBuildingMeta }) {
+function RentalUpdateModal({ onClose, setClassroomData }) {
   const [uploadStatus, setUploadStatus] = useState(UPLOAD_STATUS.IDLE);
   const [uploadErrorMessage, setUploadErrorMessage] = useState(
     DEFAULT_UPLOAD_ERROR_MESSAGE
@@ -30,10 +30,14 @@ function RentalUpdateModal({ onClose, setRentals, setBuildingMeta }) {
         rentalLastUpdatedAt: result.rentalLastUpdatedAt,
       });
 
-      setRentals(result.rentals);
-      setBuildingMeta(
-        createBuildingMeta(result.rentals, result.rentalLastUpdatedAt)
-      );
+      setClassroomData((prev) => ({
+        ...prev,
+        rentals: result.rentals,
+        buildingMeta: createBuildingMeta(
+          result.rentals,
+          result.rentalLastUpdatedAt
+        ),
+      }));
 
       setUploadStatus(UPLOAD_STATUS.SUCCESS);
     } catch (error) {

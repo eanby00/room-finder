@@ -9,12 +9,8 @@ import './App.css';
 
 function App() {
   const {
-    rooms,
-    regulars,
-    rentals,
-    buildingMeta,
-    setRentals,
-    setBuildingMeta,
+    classroomData,
+    setClassroomData,
     isPreparing,
     isDataReady,
     errorMessage,
@@ -37,9 +33,9 @@ function App() {
     setErrorMessage('');
 
     const availableRooms = searchAvailableRooms({
-      rooms,
-      regulars,
-      rentals,
+      rooms: classroomData.rooms,
+      regulars: classroomData.regulars,
+      rentals: classroomData.rentals,
       ...condition,
     });
 
@@ -55,8 +51,7 @@ function App() {
       <Search
         onError={setErrorMessage}
         onSearch={handleSearch}
-        setRentals={setRentals}
-        setBuildingMeta={setBuildingMeta}
+        setClassroomData={setClassroomData}
       />
 
       {isPreparing && (
@@ -75,7 +70,10 @@ function App() {
       )}
 
       {hasSearched && isDataReady && (
-        <ResultList results={results} buildingMeta={buildingMeta} />
+        <ResultList
+          results={results}
+          buildingMeta={classroomData.buildingMeta}
+        />
       )}
     </Page>
   );
