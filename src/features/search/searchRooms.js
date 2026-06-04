@@ -1,3 +1,5 @@
+import { normalizeRoomName } from '../../utils/normalizeRoomName';
+
 const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
 
 function getDayName(dateString) {
@@ -16,14 +18,19 @@ function timeStringToMinutes(timeString) {
 function normalizeDateText(value) {
   if (!value) return '';
 
-  return String(value)
-    .trim()
-    .replaceAll('.', '-')
-    .replace(/-(\d)(?=-|$)/g, '-0$1');
+  const text = String(value).trim();
+
+  const match = text.match(/(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})/);
+
+  if (!match) return text;
+
+  const [, year, month, day] = match;
+
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
 
 function createRoomKey(building, classroom) {
-  return `${String(building).trim()}__${String(classroom).trim()}`;
+  return `${String(building).trim()}__${normalizeRoomName(classroom)}`;
 }
 
 function isOverlapped(existingStart, existingEnd, requestStart, requestEnd) {
@@ -68,6 +75,12 @@ function addRentalConflicts({
 }) {
   rentals.forEach((rental) => {
     const rentalDate = normalizeDateText(rental.날짜);
+
+    console.log({
+      requestDate,
+      rentalDate,
+      rental,
+    });
 
     if (rentalDate !== requestDate) return;
 

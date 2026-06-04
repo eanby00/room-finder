@@ -1,4 +1,4 @@
-export function createRentalMeta(rentals, lastUpdatedAt) {
+export function createBuildingMeta(rentals, lastUpdatedAt) {
   return rentals.reduce((acc, rental) => {
     const building = rental.건물;
     const date = rental.날짜;

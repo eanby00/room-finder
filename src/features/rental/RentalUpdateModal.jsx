@@ -2,11 +2,11 @@ import { useState } from 'react';
 import Modal from '../../components/Modal';
 import { parseRentalExcelFile } from './rentalParser';
 import { sendRentalRowsToSheet } from './rentalApi';
-import { createRentalMeta } from './rentalUtils';
+import { createBuildingMeta } from './rentalUtils';
 import { DEFAULT_UPLOAD_ERROR_MESSAGE, UPLOAD_STATUS } from './rentalConstants';
 import './RentalUpdateModal.css';
 
-function RentalUpdateModal({ onClose, setRentals, setRentalMeta }) {
+function RentalUpdateModal({ onClose, setRentals, setBuildingMeta }) {
   const [uploadStatus, setUploadStatus] = useState(UPLOAD_STATUS.IDLE);
   const [uploadErrorMessage, setUploadErrorMessage] = useState(
     DEFAULT_UPLOAD_ERROR_MESSAGE
@@ -26,12 +26,13 @@ function RentalUpdateModal({ onClose, setRentals, setRentalMeta }) {
       const result = await parseRentalExcelFile(file);
 
       await sendRentalRowsToSheet({
-        rentals: result.rentals,
-        lastUpdatedAt: result.lastUpdatedAt,
+        rows: result.rentals,
+        rentalLastUpdatedAt: result.lastUpdatedAt,
       });
 
       setRentals(result.rentals);
-      setRentalMeta(createRentalMeta(result.rentals, result.lastUpdatedAt));
+      setBuildingMeta(createBuildingMeta(result.rentals, result.lastUpdatedAt));
+
       setUploadStatus(UPLOAD_STATUS.SUCCESS);
     } catch (error) {
       setUploadStatus(UPLOAD_STATUS.ERROR);

@@ -5,7 +5,7 @@ export function useClassroomData() {
   const [rooms, setRooms] = useState([]);
   const [regulars, setRegulars] = useState([]);
   const [rentals, setRentals] = useState([]);
-  const [rentalMeta, setRentalMeta] = useState({});
+  const [buildingMeta, setBuildingMeta] = useState({});
 
   const [isPreparing, setIsPreparing] = useState(true);
   const [isDataReady, setIsDataReady] = useState(false);
@@ -19,7 +19,7 @@ export function useClassroomData() {
         setRooms(data.rooms);
         setRegulars(data.regulars);
         setRentals(data.rentals);
-        setRentalMeta(data.rentalMeta);
+        setBuildingMeta(data.buildingMeta);
         setIsDataReady(true);
       } catch (error) {
         setErrorMessage('강의실 데이터를 준비하지 못했습니다.');
@@ -36,9 +36,9 @@ export function useClassroomData() {
     rooms,
     regulars,
     rentals,
-    rentalMeta,
+    buildingMeta,
     setRentals,
-    setRentalMeta,
+    setBuildingMeta,
     isPreparing,
     isDataReady,
     errorMessage,

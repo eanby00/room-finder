@@ -5,7 +5,7 @@ import {
 } from './resultUtils';
 import './ResultList.css';
 
-function ResultList({ results = [], rentalMeta = {} }) {
+function ResultList({ results = [], buildingMeta = {} }) {
   if (results.length === 0) {
     return <div className="empty-result">검색 결과가 없습니다.</div>;
   }
@@ -15,8 +15,8 @@ function ResultList({ results = [], rentalMeta = {} }) {
   return (
     <div className="result-grid">
       {Object.entries(groupedResults).map(([building, rooms]) => {
-        const endDate = rentalMeta?.[building]?.endDate;
-        const lastUpdatedAt = rentalMeta?.[building]?.lastUpdatedAt;
+        const endDate = buildingMeta?.[building]?.rentalEndDate;
+        const lastUpdatedAt = buildingMeta?.[building]?.rentalLastUpdatedAt;
 
         return (
           <section className="building-card" key={building}>

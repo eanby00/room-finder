@@ -12,9 +12,9 @@ function App() {
     rooms,
     regulars,
     rentals,
-    rentalMeta,
+    buildingMeta,
     setRentals,
-    setRentalMeta,
+    setBuildingMeta,
     isPreparing,
     isDataReady,
     errorMessage,
@@ -56,7 +56,7 @@ function App() {
         onError={setErrorMessage}
         onSearch={handleSearch}
         setRentals={setRentals}
-        setRentalMeta={setRentalMeta}
+        setBuildingMeta={setBuildingMeta}
       />
 
       {isPreparing && (
@@ -75,7 +75,7 @@ function App() {
       )}
 
       {hasSearched && isDataReady && (
-        <ResultList results={results} rentalMeta={rentalMeta} />
+        <ResultList results={results} buildingMeta={buildingMeta} />
       )}
     </Page>
   );
