@@ -3,6 +3,7 @@ import Page from './components/Page';
 import Search from './features/search/Search';
 import ResultList from './features/result/ResultList';
 import Modal from './components/Modal';
+import RentalUpdateModal from './features/rental/RentalUpdateModal';
 import { searchAvailableRooms } from './features/search/searchRooms';
 import { useClassroomData } from './hooks/useClassroomData';
 import './App.css';
@@ -19,6 +20,7 @@ function App() {
 
   const [results, setResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
 
   const handleSearch = (condition) => {
     setHasSearched(true);
@@ -42,6 +44,17 @@ function App() {
     setResults(availableRooms);
   };
 
+  const handleRentalUpdate = ({ rentals, buildingMeta }) => {
+    setClassroomData((prev) => ({
+      ...prev,
+      rentals,
+      buildingMeta,
+    }));
+
+    setResults([]);
+    setHasSearched(false);
+  };
+
   const closeModal = () => {
     setErrorMessage('');
   };
@@ -51,7 +64,7 @@ function App() {
       <Search
         onError={setErrorMessage}
         onSearch={handleSearch}
-        setClassroomData={setClassroomData}
+        onOpenRentalModal={() => setIsRentalModalOpen(true)}
       />
 
       {isPreparing && (
@@ -67,6 +80,13 @@ function App() {
             <p>{errorMessage}</p>
           </div>
         </Modal>
+      )}
+
+      {isRentalModalOpen && (
+        <RentalUpdateModal
+          onClose={() => setIsRentalModalOpen(false)}
+          onUpdate={handleRentalUpdate}
+        />
       )}
 
       {hasSearched && isDataReady && (
