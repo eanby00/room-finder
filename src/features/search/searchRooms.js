@@ -20,7 +20,7 @@ function normalizeDateText(value) {
 
   const text = String(value).trim();
 
-  const match = text.match(/(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})/);
+  const match = text.match(/(\d{4})[-./](\d{1,2})[-./](\d{1,2})/);
 
   if (!match) return text;
 
@@ -75,12 +75,6 @@ function addRentalConflicts({
 }) {
   rentals.forEach((rental) => {
     const rentalDate = normalizeDateText(rental.날짜);
-
-    console.log({
-      requestDate,
-      rentalDate,
-      rental,
-    });
 
     if (rentalDate !== requestDate) return;
 
